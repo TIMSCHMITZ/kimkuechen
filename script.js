@@ -10,10 +10,10 @@
     { id: 'insel', label: 'Kücheninsel', desc: 'Freistehend, offener Raum', base: 6000 }
   ];
   var FRONTS = [
-    { id: 'klassik', label: 'Klassik Weiß', desc: 'Zeitlos, Landhaus-Optik', perSqm: 380, color: '#F1ECE0' },
-    { id: 'hochglanz', label: 'Hochglanz Weiß', desc: 'Modern, lichtreflektierend', perSqm: 460, color: '#FFFFFF', glossy: true },
-    { id: 'mattgrau', label: 'Matt Grau', desc: 'Soft-Touch, matt', perSqm: 420, color: '#9C9992' },
-    { id: 'anthrazit', label: 'Matt Anthrazit', desc: 'Elegant & dunkel', perSqm: 480, color: '#3B3B3B' }
+    { id: 'klassik', label: 'Klassik mit Griff', desc: 'Zeitlos, mit sichtbarem Griff', perSqm: 380, color: '#F1ECE0' },
+    { id: 'grifflos', label: 'Grifflos mit Griffmulden', desc: 'Modern, Griff per Fräsung integriert', perSqm: 440, color: '#EDEAE1' },
+    { id: 'landhaus', label: 'Landhaus', desc: 'Rahmenfront im Landhausstil', perSqm: 420, color: '#F3EEE1' },
+    { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA' }
   ];
   var WORKTOPS = [
     { id: 'laminat', label: 'Laminat Holz', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E' },
@@ -110,8 +110,22 @@
     return '<div style="width:100%;height:100%;background:' + color + glossLayer + ';border-bottom:1px solid rgba(0,0,0,0.06)"></div>';
   }
 
+  function frontMedia(o) {
+    var accent = '';
+    if (o.id === 'klassik') {
+      accent = '<div style="position:absolute;top:20%;bottom:20%;right:16%;width:6px;border-radius:3px;background:#C58F52"></div>';
+    } else if (o.id === 'grifflos') {
+      accent = '<div style="position:absolute;left:12%;right:12%;top:18%;height:5px;border-radius:3px;background:rgba(0,0,0,0.2)"></div>';
+    } else if (o.id === 'landhaus') {
+      accent = '<div style="position:absolute;inset:16%;border:3px solid rgba(0,0,0,0.16);border-radius:2px"></div>';
+    } else if (o.id === 'gola') {
+      accent = '<div style="position:absolute;top:0;left:0;right:0;height:8px;background:#2B2B2B"></div>';
+    }
+    return '<div style="position:relative;width:100%;height:100%;background:' + o.color + ';border-bottom:1px solid rgba(0,0,0,0.06)">' + accent + '</div>';
+  }
+
   function mediaFor(step, o, dark) {
-    if (step.key === 'front') return swatchDiv(o.color, o.glossy);
+    if (step.key === 'front') return frontMedia(o);
     if (step.key === 'worktop') return swatchDiv(o.color, false);
     if (step.key === 'appliances') return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' + tierBarsSvg(o.tier, dark) + '</div>';
     return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' + formIconSvg(o.id) + '</div>';
