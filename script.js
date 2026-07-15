@@ -28,7 +28,7 @@
   ];
   var STEPS = [
     { key: 'form', kicker: 'Schritt 1 von 5', title: 'Welche Küchenform?', sub: 'Der Grundriss bestimmt Stauraum und Preisrahmen.', type: 'choice' },
-    { key: 'size', kicker: 'Schritt 2 von 5', title: 'Wie groß ist die Küche?', sub: 'Die Fläche skaliert Fronten und Arbeitsplatte.', type: 'size' },
+    { key: 'size', kicker: 'Schritt 2 von 5', title: 'Länge & Breite der Küche', sub: 'Beide Maße zusammen ergeben die Fläche für Fronten und Arbeitsplatte.', type: 'dims' },
     { key: 'front', kicker: 'Schritt 3 von 5', title: 'Fronten & Farbe', sub: 'Der sichtbare Charakter deiner Küche.', type: 'choice' },
     { key: 'worktop', kicker: 'Schritt 4 von 5', title: 'Arbeitsplatte', sub: 'Material für Optik und Haltbarkeit.', type: 'choice' },
     { key: 'appliances', kicker: 'Schritt 5 von 5', title: 'Geräte-Paket', sub: 'Von solide bis vollausgestattet.', type: 'choice' },
@@ -39,11 +39,13 @@
   /* ---------------- state ---------------- */
 
   function blankState() {
-    return { step: 0, form: null, size: 12, front: null, worktop: null, appliances: null, name: '', email: '', phone: '', submitted: false };
+    return { step: 0, form: null, length: 400, width: 300, front: null, worktop: null, appliances: null, name: '', email: '', phone: '', submitted: false };
   }
   var state = blankState();
 
   function euro(n) { return Math.round(n).toLocaleString('de-DE') + ' €'; }
+  function meters(cm) { return (cm / 100).toFixed(1).replace('.', ','); }
+  function area(st) { return Math.round((st.length / 100) * (st.width / 100) * 10) / 10; }
 
   function optionsFor(step) {
     if (step.key === 'form') return FORMS;
@@ -67,8 +69,8 @@
     var a = APPLIANCES.filter(function (x) { return x.id === st.appliances; })[0];
     var p = 0;
     if (f) p += f.base;
-    if (fr) p += st.size * fr.perSqm;
-    if (w) p += st.size * w.perSqm;
+    if (fr) p += area(st) * fr.perSqm;
+    if (w) p += area(st) * w.perSqm;
     if (a) p += a.add;
     return p;
   }
@@ -140,15 +142,16 @@
     var w = WORKTOPS.filter(function (x) { return x.id === state.worktop; })[0];
     var a = APPLIANCES.filter(function (x) { return x.id === state.appliances; })[0];
 
+    var areaVal = area(state);
     var summary = [
       { label: 'Küchenform', value: f ? f.label : '—' },
-      { label: 'Größe', value: state.size + ' m²' },
+      { label: 'Größe', value: meters(state.length) + ' × ' + meters(state.width) + ' m (' + String(areaVal).replace('.', ',') + ' m²)' },
       { label: 'Fronten', value: fr ? fr.label : '—' },
       { label: 'Arbeitsplatte', value: w ? w.label : '—' },
       { label: 'Geräte', value: a ? a.label : '—' }
     ];
 
-    var canNext = step.type === 'choice' ? !!state[step.key] : step.type === 'size';
+    var canNext = step.type === 'choice' ? !!state[step.key] : step.type === 'dims';
     var canSubmit = !!(state.name.trim() && state.email.trim() && state.phone.trim());
 
     return {
@@ -156,8 +159,8 @@
       stepNum: idx + 1,
       barPct: Math.round(idx / (STEPS.length - 1) * 100),
       options: options,
-      size: state.size,
-      sizeTag: state.size < 9 ? 'Kompakt' : state.size < 15 ? 'Mittel' : 'Großzügig',
+      length: state.length, width: state.width, area: areaVal,
+      sizeTag: areaVal < 9 ? 'Kompakt' : areaVal < 15 ? 'Mittel' : 'Großzügig',
       showBack: idx > 0,
       showNext: step.type !== 'result',
       canNext: canNext,
@@ -213,19 +216,32 @@
       html += '</div>';
       return html;
     }
-    if (step.type === 'size') {
+    if (step.type === 'dims') {
+      var dims = [
+        { key: 'length', label: 'Länge', val: vm.length, min: 200, max: 600, minLabel: '2,0 m', maxLabel: '6,0 m' },
+        { key: 'width', label: 'Breite', val: vm.width, min: 150, max: 400, minLabel: '1,5 m', maxLabel: '4,0 m' }
+      ];
       if (dark) {
-        return '<div class="m-size-card">'
-          + '<div class="m-size-row"><span class="m-size-num">' + vm.size + '</span><span class="m-size-unit">m²</span></div>'
-          + '<div class="m-size-tag">' + vm.sizeTag + '</div>'
-          + '<input type="range" min="5" max="20" step="1" value="' + vm.size + '" class="m-slider" data-action="size">'
-          + '<div class="m-size-minmax"><span>5 m²</span><span>20 m²</span></div>'
+        var mBlocks = dims.map(function (d) {
+          return '<div class="m-dim-block">'
+            + '<div class="m-dim-head"><span class="m-dim-label">' + d.label + '</span><span class="m-dim-val">' + d.val + ' cm</span></div>'
+            + '<input type="range" min="' + d.min + '" max="' + d.max + '" step="10" value="' + d.val + '" class="m-slider" data-action="dim" data-dim="' + d.key + '">'
+            + '<div class="m-size-minmax"><span>' + d.minLabel + '</span><span>' + d.maxLabel + '</span></div>'
+            + '</div>';
+        }).join('');
+        return '<div class="m-size-card">' + mBlocks
+          + '<div class="m-area-result"><span class="m-area-num">' + String(vm.area).replace('.', ',') + ' m²</span><span class="m-area-tag">' + vm.sizeTag + '</span></div>'
           + '</div>';
       }
-      return '<div class="d-size-card">'
-        + '<div class="d-size-row"><span class="d-size-num">' + vm.size + '</span><span class="d-size-unit">m²</span><span class="d-size-tag">' + vm.sizeTag + '</span></div>'
-        + '<input type="range" min="5" max="20" step="1" value="' + vm.size + '" class="d-slider" data-action="size">'
-        + '<div class="d-size-minmax"><span>5 m² · kompakt</span><span>20 m² · offen</span></div>'
+      var dBlocks = dims.map(function (d) {
+        return '<div class="d-dim-block">'
+          + '<div class="d-dim-head"><span class="d-dim-label">' + d.label + '</span><span class="d-dim-val">' + d.val + ' cm</span></div>'
+          + '<input type="range" min="' + d.min + '" max="' + d.max + '" step="10" value="' + d.val + '" class="d-slider" data-action="dim" data-dim="' + d.key + '">'
+          + '<div class="d-size-minmax"><span>' + d.minLabel + '</span><span>' + d.maxLabel + '</span></div>'
+          + '</div>';
+      }).join('');
+      return '<div class="d-size-card">' + dBlocks
+        + '<div class="d-area-result"><span class="d-area-num">' + String(vm.area).replace('.', ',') + ' m²</span><span class="d-area-tag">' + vm.sizeTag + '</span></div>'
         + '</div>';
     }
     if (step.type === 'result') {
@@ -399,13 +415,15 @@
   function handleInput(e) {
     var el = e.target;
     var action = el.getAttribute('data-action');
-    if (action === 'size') { state.size = Number(el.value); render(); focusAfterRender(el); }
+    if (action === 'dim') { state[el.getAttribute('data-dim')] = Number(el.value); render(); focusAfterRender(el); }
     else if (action === 'field') { state[el.getAttribute('data-field')] = el.value; render(); focusAfterRender(el); }
   }
 
   var pendingFocus = null;
   function focusAfterRender(el) {
-    pendingFocus = { selector: '[data-action="' + el.getAttribute('data-action') + '"]' + (el.getAttribute('data-field') ? '[data-field="' + el.getAttribute('data-field') + '"]' : ''), root: el.closest('.view') };
+    var discriminator = el.getAttribute('data-field') || el.getAttribute('data-dim');
+    var attr = el.getAttribute('data-field') ? 'data-field' : 'data-dim';
+    pendingFocus = { selector: '[data-action="' + el.getAttribute('data-action') + '"]' + (discriminator ? '[' + attr + '="' + discriminator + '"]' : ''), root: el.closest('.view') };
   }
 
   document.addEventListener('click', handleClick);
