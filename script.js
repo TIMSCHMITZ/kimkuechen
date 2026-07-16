@@ -17,7 +17,6 @@
   ];
   var WORKTOPS = [
     { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
-    { id: 'beton', label: 'Beton-Optik', desc: 'Industrial, matt', perSqm: 180, color: '#8C8B86', img: 'assets/images/worktop-beton.jpg' },
     { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perSqm: 400, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
   ];
   var APPLIANCES = [
