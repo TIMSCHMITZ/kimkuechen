@@ -4,16 +4,16 @@
   /* ---------------- data ---------------- */
 
   var FORMS = [
-    { id: 'zeile', label: 'Küchenzeile', desc: 'Alles an einer Wand', base: 2500 },
-    { id: 'lform', label: 'L-Form', desc: 'Über Eck, viel Stauraum', base: 3500 },
-    { id: 'uform', label: 'U-Form', desc: 'Drei Seiten, max. Fläche', base: 4500 },
-    { id: 'insel', label: 'Kücheninsel', desc: 'Freistehend, offener Raum', base: 6000 }
+    { id: 'zeile', label: 'Küchenzeile', desc: 'Alles an einer Wand', base: 2500, img: 'assets/images/form-zeile.jpg' },
+    { id: 'lform', label: 'L-Form', desc: 'Über Eck, viel Stauraum', base: 3500, img: 'assets/images/form-lform.jpg' },
+    { id: 'uform', label: 'U-Form', desc: 'Drei Seiten, max. Fläche', base: 4500, img: 'assets/images/form-uform.jpg' },
+    { id: 'insel', label: 'Kücheninsel', desc: 'Freistehend, offener Raum', base: 6000, img: 'assets/images/form-insel.jpg' }
   ];
   var FRONTS = [
-    { id: 'klassik', label: 'Klassik mit Griff', desc: 'Zeitlos, mit sichtbarem Griff', perSqm: 380, color: '#F1ECE0' },
-    { id: 'grifflos', label: 'Grifflos mit Griffmulden', desc: 'Modern, Griff per Fräsung integriert', perSqm: 440, color: '#EDEAE1' },
-    { id: 'landhaus', label: 'Landhaus', desc: 'Rahmenfront im Landhausstil', perSqm: 420, color: '#F3EEE1' },
-    { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA' }
+    { id: 'klassik', label: 'Klassik mit Griff', desc: 'Zeitlos, mit sichtbarem Griff', perSqm: 380, color: '#F1ECE0', img: 'assets/images/front-klassik.jpg' },
+    { id: 'grifflos', label: 'Grifflos mit Griffmulden', desc: 'Modern, Griff per Fräsung integriert', perSqm: 440, color: '#EDEAE1', img: 'assets/images/front-grifflos.jpg' },
+    { id: 'landhaus', label: 'Landhaus', desc: 'Rahmenfront im Landhausstil', perSqm: 420, color: '#F3EEE1', img: 'assets/images/front-landhaus.jpg' },
+    { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA', img: 'assets/images/front-gola.jpg' }
   ];
   var WORKTOPS = [
     { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E' },
@@ -123,11 +123,15 @@
     return '<div style="position:relative;width:100%;height:100%;background:' + o.color + ';border-bottom:1px solid rgba(0,0,0,0.06)">' + accent + '</div>';
   }
 
+  function photoMedia(src) {
+    return '<img src="' + src + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">';
+  }
+
   function mediaFor(step, o, dark) {
-    if (step.key === 'front') return frontMedia(o);
-    if (step.key === 'worktop') return swatchDiv(o.color, false);
+    if (step.key === 'front') return o.img ? photoMedia(o.img) : frontMedia(o);
+    if (step.key === 'worktop') return o.img ? photoMedia(o.img) : swatchDiv(o.color, false);
     if (step.key === 'appliances') return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' + tierBarsSvg(o.tier, dark) + '</div>';
-    return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' + formIconSvg(o.id) + '</div>';
+    return o.img ? photoMedia(o.img) : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' + formIconSvg(o.id) + '</div>';
   }
 
   /* ---------------- view model ---------------- */
