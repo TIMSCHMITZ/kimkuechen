@@ -16,8 +16,9 @@
     { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA', img: 'assets/images/front-gola.jpg' }
   ];
   var WORKTOPS = [
-    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
-    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perSqm: 400, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
+    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perMeter: 70, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
+    { id: 'betondekor', label: 'Betondekor', desc: 'Industrial, matt', perMeter: 110, color: '#8C8B86', img: 'assets/images/worktop-betondekor.jpg' },
+    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perMeter: 240, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
   ];
   var APPLIANCES = [
     { id: 'basis', label: 'Basis', desc: 'Kochfeld · Ofen · Kühlschrank · Spüle', add: 1800, tier: 1 },
@@ -26,9 +27,9 @@
   ];
   var STEPS = [
     { key: 'form', kicker: 'Schritt 1 von 5', title: 'Welche Küchenform?', sub: 'Der Grundriss bestimmt Stauraum und Preisrahmen.', type: 'choice' },
-    { key: 'size', kicker: 'Schritt 2 von 5', title: 'Länge & Breite der Küche', sub: 'Beide Maße zusammen ergeben die Fläche für Fronten und Arbeitsplatte.', type: 'dims' },
+    { key: 'size', kicker: 'Schritt 2 von 5', title: 'Länge & Breite der Küche', sub: 'Die Fläche bestimmt die Fronten, die Länge die laufenden Meter Arbeitsplatte.', type: 'dims' },
     { key: 'front', kicker: 'Schritt 3 von 5', title: 'Fronten & Farbe', sub: 'Der sichtbare Charakter deiner Küche.', type: 'choice' },
-    { key: 'worktop', kicker: 'Schritt 4 von 5', title: 'Arbeitsplatte', sub: 'Material für Optik und Haltbarkeit.', type: 'choice' },
+    { key: 'worktop', kicker: 'Schritt 4 von 5', title: 'Arbeitsplatte', sub: 'Material für Optik und Haltbarkeit. 38mm Stärke, 600mm Tiefe, Preis je laufendem Meter.', type: 'choice' },
     { key: 'appliances', kicker: 'Schritt 5 von 5', title: 'Geräte-Paket', sub: 'Von solide bis vollausgestattet.', type: 'choice' },
     { key: 'result', kicker: 'Geschafft', title: 'Dein unverbindlicher Richtpreis', sub: 'Basierend auf deiner Auswahl.', type: 'result' }
   ];
@@ -44,6 +45,7 @@
   function euro(n) { return Math.round(n).toLocaleString('de-DE') + ' €'; }
   function meters(cm) { return (cm / 100).toFixed(1).replace('.', ','); }
   function area(st) { return Math.round((st.length / 100) * (st.width / 100) * 10) / 10; }
+  function lfm(st) { return Math.round((st.length / 100) * 10) / 10; }
 
   function optionsFor(step) {
     if (step.key === 'form') return FORMS;
@@ -55,7 +57,8 @@
 
   function priceLabel(step, o) {
     if (step.key === 'form') return 'ab ' + euro(o.base);
-    if (step.key === 'front' || step.key === 'worktop') return euro(o.perSqm) + ' /m²';
+    if (step.key === 'front') return euro(o.perSqm) + ' /m²';
+    if (step.key === 'worktop') return euro(o.perMeter) + ' /lfm';
     if (step.key === 'appliances') return '+ ' + euro(o.add);
     return '';
   }
@@ -68,7 +71,7 @@
     var p = 0;
     if (f) p += f.base;
     if (fr) p += area(st) * fr.perSqm;
-    if (w) p += area(st) * w.perSqm;
+    if (w) p += lfm(st) * w.perMeter;
     if (a) p += a.add;
     return p;
   }
