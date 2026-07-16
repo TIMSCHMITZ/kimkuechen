@@ -16,9 +16,9 @@
     { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA', img: 'assets/images/front-gola.jpg' }
   ];
   var WORKTOPS = [
-    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perMeter: 70, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
-    { id: 'betondekor', label: 'Betondekor', desc: 'Industrial, matt', perMeter: 110, color: '#8C8B86', img: 'assets/images/worktop-betondekor.jpg' },
-    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perMeter: 240, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
+    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perMeter: 45, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
+    { id: 'betondekor', label: 'Betondekor', desc: 'Industrial, matt', perMeter: 45, color: '#8C8B86', img: 'assets/images/worktop-betondekor.jpg' },
+    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perMeter: null, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
   ];
   var APPLIANCES = [
     { id: 'basis', label: 'Basis', desc: 'Kochfeld · Ofen · Kühlschrank · Spüle', add: 1800, tier: 1 },
@@ -58,7 +58,7 @@
   function priceLabel(step, o) {
     if (step.key === 'form') return 'ab ' + euro(o.base);
     if (step.key === 'front') return euro(o.perSqm) + ' /m²';
-    if (step.key === 'worktop') return euro(o.perMeter) + ' /lfm';
+    if (step.key === 'worktop') return o.perMeter == null ? 'Auf Anfrage' : euro(o.perMeter) + ' /lfm';
     if (step.key === 'appliances') return '+ ' + euro(o.add);
     return '';
   }
@@ -71,7 +71,7 @@
     var p = 0;
     if (f) p += f.base;
     if (fr) p += area(st) * fr.perSqm;
-    if (w) p += lfm(st) * w.perMeter;
+    if (w && w.perMeter != null) p += lfm(st) * w.perMeter;
     if (a) p += a.add;
     return p;
   }
