@@ -16,9 +16,8 @@
     { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA' }
   ];
   var WORKTOPS = [
-    { id: 'laminat', label: 'Laminat Holz', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E' },
+    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E' },
     { id: 'beton', label: 'Beton-Optik', desc: 'Industrial, matt', perSqm: 180, color: '#8C8B86' },
-    { id: 'naturstein', label: 'Naturstein', desc: 'Granit, edel', perSqm: 320, color: '#3A3836' },
     { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perSqm: 400, color: '#E4DFD4' }
   ];
   var APPLIANCES = [
