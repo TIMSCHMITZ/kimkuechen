@@ -16,9 +16,9 @@
     { id: 'gola', label: 'Gola', desc: 'Grifflos mit Alu-Profilsystem', perSqm: 520, color: '#E4E1DA', img: 'assets/images/front-gola.jpg' }
   ];
   var WORKTOPS = [
-    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E' },
-    { id: 'beton', label: 'Beton-Optik', desc: 'Industrial, matt', perSqm: 180, color: '#8C8B86' },
-    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perSqm: 400, color: '#E4DFD4' }
+    { id: 'holzdekor', label: 'Holzdekorarbeitsplatte', desc: 'Warm & robust', perSqm: 120, color: '#B07A4E', img: 'assets/images/worktop-holzdekor.jpg' },
+    { id: 'beton', label: 'Beton-Optik', desc: 'Industrial, matt', perSqm: 180, color: '#8C8B86', img: 'assets/images/worktop-beton.jpg' },
+    { id: 'keramik', label: 'Keramik', desc: 'Kratzfest, premium', perSqm: 400, color: '#E4DFD4', img: 'assets/images/worktop-keramik.jpg' }
   ];
   var APPLIANCES = [
     { id: 'basis', label: 'Basis', desc: 'Kochfeld · Ofen · Kühlschrank · Spüle', add: 1800, tier: 1 },
